@@ -13,7 +13,7 @@
 #define ELECTRON_MASS 1
 #define ELECTRON_CHARGE 1
 
-#define NUMBER_OF_DIMENSIONS
+#define NUMBER_OF_DIMENSIONS 3 // TODO: Избавиться от константы, задавать в последствии в динамике, через методы vector
 
 typedef std::array<double, NUMBER_OF_DIMENSIONS> Vector;
 
