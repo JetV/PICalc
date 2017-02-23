@@ -16,5 +16,6 @@
 #define NUMBER_OF_DIMENSIONS 3 // TODO: Избавиться от константы, задавать в последствии в динамике, через методы vector
 
 typedef std::array<double, NUMBER_OF_DIMENSIONS> Vector;
+typedef std::array<size_t, NUMBER_OF_DIMENSIONS> Vector_of_indexes;
 
 #endif //PICALC_CONSTANTS_H
