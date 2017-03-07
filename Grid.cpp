@@ -36,6 +36,16 @@ Grid::Grid(Vector sizes, std::array<size_t, NUMBER_OF_DIMENSIONS> sizes_in_nodes
   _cells = std::vector<Node>(cells_count);
 }
 
+size_t Grid::get_number_of_nodes()
+{
+  return _nodes.size();
+}
+
+const std::array<size_t, NUMBER_OF_DIMENSIONS>& Grid::get_sizes_in_nodes()
+{
+  return _sizes_in_nodes;
+}
+
 Grid::Node& Grid::get_node(Vector_of_indexes indexes)
 {
   // Напоминание: массив всех узлов линеен
@@ -87,17 +97,17 @@ Grid::Node::Node() :
 }
 
 // Check template! TODO: complete
-Vertical_pair_nodes_iterator& Grid::Vertical_pair_nodes_iterator::move(const std::array<int, NUMBER_OF_DIMENSIONS>& offset)
+Grid::Vertical_pair_nodes_iterator& Grid::Vertical_pair_nodes_iterator::move(const std::array<int, NUMBER_OF_DIMENSIONS>& offset)
 {
   // _indexes += offset;
 
 }
 
-Grid::Vertical_pair_nodes_iterator& Grid::Vertical_pair_nodes_iterator::operator += (Vertical_pair_nodes_iterator& iterator, int offset)
+Grid::Vertical_pair_nodes_iterator& Grid::Vertical_pair_nodes_iterator::operator += (int offset)
 {
-  iterator._index += offset;
-  iterator._bottom_node += offset;
-  iterator._top_node += offset;
+  _index += offset;
+  _bottom_node += offset;
+  _top_node += offset;
 }
 
 Grid::Node& Grid::Vertical_pair_nodes_iterator::get_bottom_node()
@@ -138,6 +148,30 @@ Grid::Vertical_pair_nodes_iterator Grid::get_vertical_pair_nodes_iterator(Vector
 
   // принимает текущий узел (id), указатель на текущий узел, указатель на узел выше в вертикальной паре - это не работает для одномерного случая TODO:
   return Vertical_pair_nodes_iterator(node_id, &_nodes[node_id], &_nodes[node_id + _sizes_in_nodes[NUMBER_OF_DIMENSIONS-2]]);
+}
+
+Grid::Vertical_pair_nodes_iterator Grid::get_vertical_pair_nodes_iterator(Vector_of_indexes indexes)
+{
+  // Напоминание: массив всех узлов линеен
+
+  size_t node_id = 0;
+  // Проход по всем измерениям от последнего
+  for (size_t i = NUMBER_OF_DIMENSIONS - 1; i >= 0; --i)
+  {
+    // Получаем число узлов в слое
+    // Индекс по данной оси
+    size_t nodes_in_layer_count = indexes[i];
+    // Объём слоя под этим индексом (измеренный в узлах)
+    for (size_t j = i; j < NUMBER_OF_DIMENSIONS; ++j)
+    {
+      nodes_in_layer_count *= _sizes_in_nodes[j];
+    }
+    // Добавляем к общему индексу объем слоя по данной оси
+    node_id += nodes_in_layer_count;
+  }
+
+  // принимает текущий узел (id), указатель на текущий узел, указатель на узел выше в вертикальной паре - это не работает для одномерного случая TODO:
+  return Vertical_pair_nodes_iterator(node_id, &_nodes[node_id], &_nodes[node_id + _sizes_in_nodes[NUMBER_OF_DIMENSIONS - 2]]);
 }
 
 
